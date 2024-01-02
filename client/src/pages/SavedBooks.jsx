@@ -9,7 +9,6 @@ import {
 import { useQuery, useMutation } from '@apollo/client';
 import { GET_ME } from '../utils/queries';
 import { REMOVE_BOOK } from '../utils/mutations';
-import { getMe, deleteBook } from '../utils/API';
 import Auth from '../utils/auth';
 import { removeBookId } from '../utils/localStorage';
 
@@ -28,7 +27,7 @@ const SavedBooks = () => {
           return false;
         }
 
-        const response = useMutation(GET_ME)/*await getMe(token)*/;
+        const response = useQuery(GET_ME(token))/*await getMe(token)*/;
 
         if (!response.ok) {
           throw new Error('something went wrong!');
@@ -53,7 +52,7 @@ const SavedBooks = () => {
     }
 
     try {
-      const response = useMutation(REMOVE_BOOK)/*await deleteBook(bookId, token)*/;
+      const response = useMutation(REMOVE_BOOK(bookId))/*await deleteBook(bookId, token)*/;
 
       if (!response.ok) {
         throw new Error('something went wrong!');
