@@ -1,10 +1,11 @@
 const typeDefs = `
   type User {
     _id: ID
-    username: String
-    email: String
-    password: String
-    thoughts: [Thought]!
+    username: String!
+    email: String!
+    password: String!
+    bookCount: Int
+    savedBooks: [Book]
   }
 
   input BookInput {
@@ -32,10 +33,6 @@ const typeDefs = `
   }
 
   type Query {
-    users: [User]
-    user(username: String!): User
-    thoughts(username: String): [Thought]
-    thought(thoughtId: ID!): Thought
     me: User
   }
 
