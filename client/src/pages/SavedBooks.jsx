@@ -1,4 +1,3 @@
-import { useState, useEffect } from 'react';
 import {
   Container,
   Card,
@@ -6,6 +5,7 @@ import {
   Row,
   Col
 } from 'react-bootstrap';
+import { useState } from 'react';
 import { useQuery, useMutation } from '@apollo/client';
 import { GET_ME } from '../utils/queries';
 import { REMOVE_BOOK } from '../utils/mutations';
@@ -14,45 +14,44 @@ import { removeBookId } from '../utils/localStorage';
 
 const SavedBooks = () => {
   const [userData, setUserData] = useState({});
-
-  // use this to determine if `useEffect()` hook needs to run again
   const userDataLength = Object.keys(userData).length;
+  const getMe = useQuery(GET_ME);
+  const [removeBook, { error, data }] = useMutation(REMOVE_BOOK);
 
-  useEffect(() => {
-    const getUserData = async () => {
-      try {
-        const token = Auth.loggedIn() ? Auth.getToken() : null;
+  const getUserData = async () => {
+    try {
+      const token = Auth.loggedIn() ? Auth.getToken() : null;
 
-        if (!token) {
-          return false;
-        }
-
-        const response = useQuery(GET_ME(token))/*await getMe(token)*/;
-
-        if (!response.ok) {
-          throw new Error('something went wrong!');
-        }
-
-        const user = await response.json();
-        setUserData(user);
-      } catch (err) {
-        console.error(err);
+      if (!token) {
+        return false;
       }
-    };
 
-    getUserData();
-  }, [userDataLength]);
+      const response = await getMe({ variables: { ...token }});
 
+      if (!response.ok) {
+        throw new Error('something went wrong!');
+      }
+
+      const user = await response.json();
+      setUserData(user);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+  
+  getUserData();
+  
   // create function that accepts the book's mongo _id value as param and deletes the book from the database
   const handleDeleteBook = async (bookId) => {
     const token = Auth.loggedIn() ? Auth.getToken() : null;
+    
 
     if (!token) {
       return false;
     }
 
     try {
-      const response = useMutation(REMOVE_BOOK(bookId))/*await deleteBook(bookId, token)*/;
+      const response = removeBook({ variables: { bookId: bookId }});
 
       if (!response.ok) {
         throw new Error('something went wrong!');

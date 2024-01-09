@@ -5,7 +5,7 @@ const typeDefs = `
     email: String!
     password: String!
     bookCount: Int
-    savedBooks: [Book]
+    savedBooks: [Book]!
   }
 
   input BookInput {
