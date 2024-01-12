@@ -26,10 +26,8 @@
   
   ## Contributing
   
-  If you have any suggestions on how to improve the application, you can open an issue on the github page with the tag 'suggestion' or fork the project, create a feature branch, commit your changes, push to your branch, and open a pull request.
-  
-  ## Tests
-  
+  If you have any suggestions on how to improve the application, you can open an issue on the github page with the tag 'suggestion' or fork the project, create a feature branch, commit   
+  your changes, push to your branch, and open a pull request.
   
   ## License 
   MIT License
