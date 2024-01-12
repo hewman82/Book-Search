@@ -7,39 +7,21 @@ import {
 } from 'react-bootstrap';
 import { useState } from 'react';
 import { useQuery, useMutation } from '@apollo/client';
-import { GET_ME } from '../utils/queries';
+import { GET_USER } from '../utils/queries';
 import { REMOVE_BOOK } from '../utils/mutations';
 import Auth from '../utils/auth';
 import { removeBookId } from '../utils/localStorage';
 
 const SavedBooks = () => {
-  const [userData, setUserData] = useState({});
+  const userEmail = Auth.getProfile().data.email;
+  console.log(userEmail);
+  const { loading, data } = useQuery(GET_USER, { variables: { email: userEmail }});
+  const userData = data?.user || {};
+  console.log(userData);
   const userDataLength = Object.keys(userData).length;
-  const getMe = useQuery(GET_ME);
-  const [removeBook, { error, data }] = useMutation(REMOVE_BOOK);
 
-  const getUserData = async () => {
-    try {
-      const token = Auth.loggedIn() ? Auth.getToken() : null;
-
-      if (!token) {
-        return false;
-      }
-
-      const response = await getMe({ variables: { ...token }});
-
-      if (!response.ok) {
-        throw new Error('something went wrong!');
-      }
-
-      const user = await response.json();
-      setUserData(user);
-    } catch (err) {
-      console.error(err);
-    }
-  };
+  const [removeBook, { error }] = useMutation(REMOVE_BOOK);
   
-  getUserData();
   
   // create function that accepts the book's mongo _id value as param and deletes the book from the database
   const handleDeleteBook = async (bookId) => {
@@ -51,16 +33,14 @@ const SavedBooks = () => {
     }
 
     try {
-      const response = removeBook({ variables: { bookId: bookId }});
+      const {data} = await removeBook({ variables: { bookId: bookId }});
 
-      if (!response.ok) {
+      if (!data) {
         throw new Error('something went wrong!');
       }
-
-      const updatedUser = await response.json();
-      setUserData(updatedUser);
       // upon success, remove book's id from localStorage
       removeBookId(bookId);
+      location.reload();
     } catch (err) {
       console.error(err);
     }

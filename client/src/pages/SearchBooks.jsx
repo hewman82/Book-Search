@@ -74,9 +74,8 @@ const SearchBooks = () => {
     }
 
     try {
-      console.log(bookToSave);
-      const { data } = await saveBook({ variables: { bookId: bookToSave.bookId }})/*await saveBook(bookToSave, token)*/;
-
+      const {data} = await saveBook({ variables: { bookId: bookToSave.bookId, authors: bookToSave.authors, description: bookToSave.description, title: bookToSave.title, image: bookToSave.image, link: bookToSave.link }});
+      console.log(data);
       if (!data) {
         throw new Error('something went wrong!');
       }
